@@ -1,1 +1,1 @@
-Currently being built with the JAWT graphics library.
+Currently being built with the built-in JAWT graphics library.
