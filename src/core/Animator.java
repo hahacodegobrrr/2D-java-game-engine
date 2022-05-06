@@ -14,6 +14,10 @@ public class Animator {
 		
 	}
 	
+	/**
+	 * Play a certain animation
+	 * @param animationName name of the animation
+	 */
 	public void startAnimation(String animationName) {
 		for (int i = 0; i < animations.size(); i++) {
 			if (animations.get(i).getName().equals(animationName)) {
@@ -23,6 +27,10 @@ public class Animator {
 		}
 	}
 	
+	/**
+	 * Gets the current animation frame
+	 * @return image of current animation frame
+	 */
 	public Image getCurrentFrame() {
 		return null;
 	}

@@ -11,6 +11,11 @@ public class FileIO {
 	public static String texturePath = "Assets" + File.separator + "Textures" + File.separator;
 	public static String audioPath = "Assets" + File.separator + "Audio" + File.separator;
 	
+	/**
+	 * Load an image from file path
+	 * @param path absolute path from program root
+	 * @return loaded image
+	 */
 	public static Image loadTexture(String path) {
 		try {
 			return ImageIO.read(new File(path));
@@ -19,6 +24,11 @@ public class FileIO {
 		}
 	}
 	
+	/**
+	 * Load a .wav file from file path
+	 * @param path absolute path to file to .wav file
+	 * @return audio input stream
+	 */
 	public static AudioInputStream loadAudioStream(String path) {
 		AudioInputStream audioInputStream = null;
 		try {

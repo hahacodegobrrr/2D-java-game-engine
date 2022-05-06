@@ -18,6 +18,9 @@ public class GameCanvas extends JPanel {
 		repaint();
 	}
 	
+	/**
+	 * Called by timer every game tick
+	 */
 	public void update() {
 		frameRate = 1/Time.timer.timeSinceLastCall();
 		for (int i = 0; i < scenes.size(); i++) {
@@ -28,11 +31,14 @@ public class GameCanvas extends JPanel {
 		repaint();
 	}
 	
+	/**
+	 * Render canvas
+	 */
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		//draw gameobjects
+		//draw scenes
 		for (int i = 0; i < scenes.size(); i++) {
 			scenes.get(i).render(g);
 		}
@@ -40,6 +46,10 @@ public class GameCanvas extends JPanel {
 		renderDebug(g);
 	}
 	
+	/**
+	 * Display debug information
+	 * @param g jawt graphics context
+	 */
 	private void renderDebug(Graphics g) {
 //		System.out.println("rendering debug screen");
 		g.drawString(""+frameRate, 20, 20);

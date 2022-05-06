@@ -15,6 +15,10 @@ public class GameObject extends Component implements Drawable {
 	
 	private LinkedList<Component> components;
 	
+	/**
+	 * Create an empty game object
+	 * @param name name of game object
+	 */
 	public GameObject(String name) {
 		super(ComponentType.GAME_OBJECT);
 		position = new Vector();

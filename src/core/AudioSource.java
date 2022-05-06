@@ -21,6 +21,9 @@ public class AudioSource extends Component {
 		play();
 	}
 	
+	/**
+	 * Play the audioclip
+	 */
 	public void play() {
 		if (clip == null || !clip.isRunning()) {
 //			System.out.println("clip over");
@@ -29,6 +32,9 @@ public class AudioSource extends Component {
 		((FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN)).setValue(-20);
 	}
 	
+	/**
+	 * Get an audioclip from the file path
+	 */
 	private void getAudioClip() {
 		try {
 			audioInputStream = FileIO.loadAudioStream(FileIO.audioPath + "All Alone blind witness.wav");
