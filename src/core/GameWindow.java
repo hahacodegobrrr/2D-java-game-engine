@@ -15,7 +15,7 @@ public class GameWindow extends JFrame {
 		setResizable(resizeable);
 		setVisible(true);
 		
-		mainCanvas = new GameCanvas();
+		mainCanvas = new GameCanvas(width, height);
 		setContentPane(mainCanvas);
 
 		mainCanvas.requestFocusInWindow();

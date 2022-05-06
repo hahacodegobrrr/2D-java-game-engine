@@ -10,7 +10,8 @@ public class GameCanvas extends JPanel {
 	private double frameRate = 0;
 	private ArrayList<Scene> scenes;
 	
-	public GameCanvas() {
+	public GameCanvas(int width, int height) {
+		setSize(width, height);
 		new Time(this);
 		scenes = new ArrayList<Scene>();
 		scenes.add(new Scene(this, "game"));
@@ -35,11 +36,12 @@ public class GameCanvas extends JPanel {
 		for (int i = 0; i < scenes.size(); i++) {
 			scenes.get(i).render(g);
 		}
-		
+//		System.out.println("paint component");
 		renderDebug(g);
 	}
 	
 	private void renderDebug(Graphics g) {
+//		System.out.println("rendering debug screen");
 		g.drawString(""+frameRate, 20, 20);
 	}
 }
