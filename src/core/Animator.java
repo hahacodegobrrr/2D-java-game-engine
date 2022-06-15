@@ -1,37 +1,57 @@
 package core;
 
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Animator {
+	
+	private String gameObjectName;
+	private Animation activeAnimation;
+	private long activeAnimationStartTime;
+	
 	private ArrayList<Animation> animations;
-	private Animation runningAnimation;
 	
-	
-	public Animator(String name) {
+	public Animator(String gameObjectName) {
+		this.gameObjectName = gameObjectName;
 		animations = new ArrayList<Animation>();
-		
 	}
 	
-	/**
-	 * Play a certain animation
-	 * @param animationName name of the animation
-	 */
-	public void startAnimation(String animationName) {
+	public void addAnimation(String animationName, int fps) {
+		animations.add(new Animation(gameObjectName, animationName, fps));
+//		System.out.println("added " + animationName + " to " + gameObjectName);
+	}
+	
+	public void addAnimation(String animationName, int fps, boolean loopable) {
+		animations.add(new Animation(gameObjectName, animationName, fps, loopable));
+	}
+
+	private Animation getAnimation(String animationName) {
 		for (int i = 0; i < animations.size(); i++) {
 			if (animations.get(i).getName().equals(animationName)) {
-				runningAnimation = animations.get(i);
-				break;
+				return animations.get(i);
 			}
+		}
+		return null;
+	}
+	
+	public void startAnimation(String name) {
+		if (activeAnimation == null || !activeAnimation.getName().equals(name)) {
+			activeAnimation = getAnimation(name);
+			activeAnimationStartTime = System.nanoTime();
+			return;
+		}
+
+		if (activeAnimation.getName().equals(name) && !activeAnimation.isLoopable()) {
+			activeAnimationStartTime = System.nanoTime();
 		}
 	}
 	
-	/**
-	 * Gets the current animation frame
-	 * @return image of current animation frame
-	 */
-	public Image getCurrentFrame() {
-		return null;
+	public BufferedImage getCurrentFrame() {
+//		System.out.println(gameObjectName + "_" + activeAnimation.getName());
+		if (activeAnimation == null) {
+			return null;
+		}
+		return activeAnimation.getCurrentFrame((System.nanoTime() - activeAnimationStartTime) / 1000000000f);
 	}
 }

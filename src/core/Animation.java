@@ -1,60 +1,91 @@
 package core;
-import java.awt.Image;
-import java.util.LinkedList;
+
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
 
 public class Animation {
-	private String name;
-	private Image[] animation;
+
+	private String gameObjectName;
+	private String animationName;
+	private ArrayList<BufferedImage> frames;
 	private int fps;
-	private long startTime;
+	private boolean loopable;
 	
 	/**
-	 * Precondition: files must be named "objectName_animationName_frameNumber.png"
-	 * @param objectName name of the GameObject
-	 * @param animationName name of animation (eg. "walk")
-	 * @param fps frames to be played per second
+	 * File names need to be in the form <game object name>_<animation name>_<frame number>.png
+	 * @param gameObjectName
+	 * @param animationName
 	 */
-	public Animation(String objectName, String animationName, int fps) {
-		this.name = animationName;
-		int frames = 0;
-		LinkedList<Image> frameList = new LinkedList<Image>();
-		Image frame = null;
-		do {
-			frame = FileIO.loadTexture(FileIO.texturePath + objectName + "_" + animationName + "_" + frames + ".png");
-			frames++;
-			frameList.add(frame);
-		} while (frame != null);
-		
-		//last element will be null		
-		frameList.remove(frameList.size() - 1);
-		frames--;
-		
-		animation = (Image[]) frameList.toArray();
+	public Animation(String gameObjectName, String animationName, int fps) {
+		this.gameObjectName = gameObjectName;
+		this.animationName = animationName;
 		this.fps = fps;
+		
+		//loops by default
+		loopable = true;
+		loadFrames();
+	}
+
+	public Animation(String gameObjectName, String animationName, int fps, boolean loopable) {
+		this(gameObjectName, animationName, fps);
+		this.loopable = loopable;
 	}
 	
-	/**
-	 * Begins the timer for the animation
-	 */
-	public void start() {
-		startTime = System.nanoTime();
+	private void loadFrames() {
+		frames = new ArrayList<BufferedImage>();
+		//scuffed; get rid of this when making an actual engine lmao
+		if (animationName.equals("blank") || gameObjectName.equals("number")) {
+			try {
+				frames.add(ImageIO.read(new File("Assets/Textures/" + animationName + ".png")));
+			} catch (Exception e) {}
+			return;
+		}
+		for (int i = 0; i < 5; i++) {
+			if (gameObjectName.equals("" + i)) {
+				try {
+					frames.add(ImageIO.read(new File("Assets/Textures/" + animationName + ".png")));
+				} catch (Exception e) {}
+				return;
+			}
+		}
+		int numberOfFrames = 0;
+		
+		//once the last frame has been found, will throw a filenotfound or something and break
+		try {
+			while (numberOfFrames < 100) {
+				frames.add(ImageIO.read(new File("Assets/Textures/" + gameObjectName + "_" + animationName + "_" + numberOfFrames + ".png")));
+				numberOfFrames++;
+			}
+		} catch (Exception e) {}
 	}
 	
-	/**
-	 * Based on time from animation start, get current frame
-	 * @return sprite for current frame
-	 */
-	public Image getCurrentFrame() {
-		double secsSinceStart = (System.nanoTime() - startTime) / 1000000000f;
-		int imageIndex = (int)((secsSinceStart * fps) % (animation.length));
-		return animation[imageIndex];
+	public BufferedImage getCurrentFrame(double timeSinceAnimationStart) {
+		if (frames.size() == 0) {
+			return null;
+		}
+		
+		int imageIndex;
+		
+		if (loopable) {
+			imageIndex = (int)(timeSinceAnimationStart * fps) % (frames.size());
+		} else {
+			imageIndex = Math.min((int)(timeSinceAnimationStart * fps), frames.size() - 1);
+		}
+		return frames.get(imageIndex);
 	}
 	
-	/**
-	 * name of the animation (eg. "walk", "hit", etc)
-	 * @return name of animation
-	 */
 	public String getName() {
-		return name;
+		return animationName;
+	}
+	
+	public boolean isLoopable() {
+		return loopable;
+	}
+	
+	public void setLoopable(boolean loopable) {
+		this.loopable = loopable;
 	}
 }

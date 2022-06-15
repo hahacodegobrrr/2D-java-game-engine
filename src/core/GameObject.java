@@ -2,62 +2,78 @@ package core;
 
 
 import java.awt.Graphics;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
-
-public class GameObject extends Component implements Drawable {
-
-	public Vector position;
-	
-	private Vector scale; //number of pixels on screen
-	
+public class GameObject {
 	private String name;
+	private Vector position; //position in world space
+	private Vector scale; //size in game units
 	
-	private LinkedList<Component> components;
+	private Scene myScene;
 	
-	/**
-	 * Create an empty game object
-	 * @param name name of game object
-	 */
-	public GameObject(String name) {
-		super(ComponentType.GAME_OBJECT);
-		position = new Vector();
-		scale = new Vector(1000, 1000);
-		this.components = new LinkedList<Component>();
+	private SpriteRenderer renderer;
+	private AudioPlayer audioPlayer;
+	private ArrayList<BoxCollider> colliders;
+	
+	public GameObject(String name, Vector position, Vector scale, Scene scene) {
+		this.name = name;
+		this.position = position;
+		this.scale = scale;
+		myScene = scene;
+		colliders = new ArrayList<BoxCollider>();
+		renderer = new SpriteRenderer(this);
+		audioPlayer = new AudioPlayer();
 	}
 	
-	/**
-	 * Add a component to the game object
-	 * @param component reference to component
-	 */
-	public void addComponent(Component component) {
-		if (component != null) components.add(component);
+	public void addBoxCollider(BoxCollider collider) {
+		colliders.add(collider);
 	}
 	
-	/**
-	 * Updates the game object and every component in the game object
-	 * @param timeSinceLastUpdate seconds between updates
-	 */
-	public void update(double timeSinceLastUpdate) {
-		position.x = Math.cos(Time.timer.timeSinceStart() * 10) * 100;
-		position.y = Math.sin(Time.timer.timeSinceStart() * 10) * 100;
-		
-		for (int i = 0; i < components.size(); i++) {
-			
+	public ArrayList<BoxCollider> getBoxColliders() {
+		return colliders;
+	}
+	
+	public void update() {
+		//set all colliders to false by default before rescanning
+		for (int i = 0; i < colliders.size(); i++) {
+			colliders.get(i).setColliding(false);
 		}
 	}
 	
-	/**
-	 * Render the game object by calling render function in sprite renderer component
-	 */
-	@Override
 	public void render(Graphics g) {
-		for (int i = 0; i < components.size(); i++) {
-			if (components.get(i).getComponentType() == ComponentType.SPRITE_RENDERER) {
-				((SpriteRenderer)components.get(i)).render(g, position, scale);
-				break;
+		renderer.render(g);
+		if (RenderFlags.VISIBLE_COLLIDERS) {
+			for (BoxCollider collider : colliders) {
+				collider.draw(g);
 			}
 		}
 	}
-
+	
+	public Scene getScene() {
+		return myScene;
+	}
+	
+	public SpriteRenderer getSpriteRenderer() {
+		return renderer;
+	}
+	
+	public AudioPlayer getAudioPlayer() {
+		return audioPlayer;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public Vector getPosition() {
+		return position;
+	}
+	
+	public void setPosition(Vector v) {
+		this.position = v;
+	}
+	
+	public Vector getScale() {
+		return scale;
+	}
 }

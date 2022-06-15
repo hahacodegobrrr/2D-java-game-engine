@@ -20,4 +20,12 @@ public class GameWindow extends JFrame {
 
 		mainCanvas.requestFocusInWindow();
 	}
+	
+	/**
+	 * Get the game canvas
+	 * @return
+	 */
+	public GameCanvas getGameCanvas() {
+		return mainCanvas;
+	}
 }
